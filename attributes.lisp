@@ -2,30 +2,14 @@
 ;;;; user) that can write and read from it so that the files in the directory
 ;;;; can be dynamically updated.
 
-(ql:quickload :eo-config)
+;(ql:quickload :eo-config)
 
 (defpackage :att-test
   (:use :cl :eo-config))
-
 (in-package :att-test)
-
-(defvar *config-dir* (merge-pathnames "att.config" (uiop:getcwd)))
 
 ;; Default attributes. Need to define it in the future config file
 ;(defvar *default* '(*job-name* x y))
-
-(define-allowed-names
-  'default
-  'job-name
-  'test
-  'hello)
-
-(eo-config:make-config-globals (load-config *config-dir*) *config-allowed-names*)
-
-; *config-globals-list*
-; *config-allowed-names*
-
-;(eo-config/utils:flush-global '*config-globals-list*)
 
 ;; Create hidden file
 
@@ -35,7 +19,7 @@
                      :if-exists :supersede ; change this later so it doesn't clobber the file. Testing purposes only
                      :if-does-not-exist :create
                      :direction :output)
-    (format f "~S" (collect-attributes def))))
+    (format f "~S" (collect-attributes (convert-to-global def)))))
 
 (defun convert-to-global (lst)
   "converts a list of symbols into a list of symbols in a global format"
